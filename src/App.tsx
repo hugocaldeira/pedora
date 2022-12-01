@@ -1,8 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import useFetch from './hooks/useFetch';
 
 function App() {
+
+  const { data } = useFetch('https://jsonplaceholder.typicode.com/todos');
+
   return (
     <div className="App">
       <header className="App-header">
@@ -19,6 +23,7 @@ function App() {
           Learn React
         </a>
       </header>
+      <p>{ data.statusText }</p>
     </div>
   );
 }
