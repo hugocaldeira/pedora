@@ -1,28 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
-import useNewsService from './hooks/useNewsService';
+import logo from "./logo.svg";
+import "./App.css";
+import useNewsService from "./hooks/useNewsService";
+import News from "./pages/News";
 
 function App() {
-
-  const { data } = useNewsService();
+  const data = useNewsService();
+  console.log(data.loading);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className='App'>
+      <header className='App-header'>
+        <p>Pedora, the ultimate personnal app</p>
       </header>
-      <p>{data.status}</p>
+      <News />
     </div>
   );
 }

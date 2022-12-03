@@ -1,47 +1,32 @@
 import { useEffect, useState } from "react";
-
-export interface News {
-	status: string;
-	totalResults: number;
-	results?: (ResultsEntity)[] | null;
-	nextPage: number;
-}
-export interface ResultsEntity {
-	title: string;
-	link: string;
-	keywords?: (string)[] | null;
-	creator?: (string)[] | null;
-	video_url?: null;
-	description?: string | null;
-	content?: string | null;
-	pubDate: string;
-	image_url?: string | null;
-	source_id: string;
-	country?: (string)[] | null;
-	category?: (string)[] | null;
-	language: string;
-}
+import { INews } from "../models/News";
 
 const useNewsService = () => {
-	const url = 'https://newsdata.io/api/1/news?apikey=pub_14100e34d1670ad239fb7398ca918c71e942b&language=en';
-	const [data, setData] = useState({} as News);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+  const url =
+    "https://newsdata.io/api/1/news?apikey=pub_14100e34d1670ad239fb7398ca918c71e942bi&language=pt&country=pt";
+  const [data, setData] = useState({} as INews);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-	useEffect(() => {
-		setLoading(true);
-		fetch(url)
-			.then(response => response.json())
-			.then(response => setData(response))
-			.catch((err) => {
-				setError(err);
-			})
-			.finally(() => {
-				setLoading(false);
-			});
-	}, [])
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        console.log("fetching");
+        const response = await fetch(url);
+        const result = await response.json();
+        setData(result);
+        setLoading(false);
+      } catch (err) {
+        console.log(typeof err);
+        console.log(err);
 
-	return { data, loading, error };
-}
+        setLoading(false);
+        setError("error found");
+      }
+    })();
+  }, []);
+  return { data, loading, error };
+};
 
 export default useNewsService;
