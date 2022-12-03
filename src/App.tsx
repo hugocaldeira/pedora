@@ -1,11 +1,10 @@
-import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import useFetch from './hooks/useFetch';
+import useNewsService from './hooks/useNewsService';
 
 function App() {
 
-  const { data } = useFetch('https://jsonplaceholder.typicode.com/todos');
+  const { data } = useNewsService();
 
   return (
     <div className="App">
@@ -23,7 +22,7 @@ function App() {
           Learn React
         </a>
       </header>
-      <p>{ data.statusText }</p>
+      <p>{data.status}</p>
     </div>
   );
 }
