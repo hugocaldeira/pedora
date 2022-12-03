@@ -1,6 +1,6 @@
-import NewsItem from "../components/NewsItem";
-import useNewsService from "../hooks/useNewsService";
-import "./News.css";
+import NewsItem from '../components/NewsItem';
+import useNewsService from '../hooks/useNewsService';
+import './News.css';
 
 const News = () => {
   const data = useNewsService();

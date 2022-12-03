@@ -1,4 +1,4 @@
-import { INewsItem } from "../models/News";
+import { INewsItem } from '../models/News';
 
 const NewsItem = ({ NewsItemData }: { NewsItemData: INewsItem }) => {
   return (

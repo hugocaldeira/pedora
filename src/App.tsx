@@ -1,7 +1,7 @@
-import logo from "./logo.svg";
-import "./App.css";
-import useNewsService from "./hooks/useNewsService";
-import News from "./pages/News";
+import logo from './logo.svg';
+import './App.css';
+import useNewsService from './hooks/useNewsService';
+import News from './pages/News';
 
 function App() {
   const data = useNewsService();
