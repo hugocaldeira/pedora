@@ -1,7 +1,7 @@
 import NewsItem from '../components/NewsItem';
 import useNewsService from '../hooks/useNewsService';
 import styles from './News.module.css';
-import { Dropdown, MenuProps, Space, Typography } from 'antd';
+import { Dropdown, MenuProps, Select, Space, Typography } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import countries from '../util/countries';
@@ -16,14 +16,22 @@ const News = () => {
     setCountryCode(key);
   };
 
-  const items: MenuProps['items'] = countries.map((country) => {
+  const items = countries.map((country) => {
     return {
       label: country.name,
-      key: country.code,
+      value: country.code,
     };
   });
 
   console.log(error);
+
+  const onChange = (value: string) => {
+    setCountryCode(value);
+  };
+
+  const onSearch = (value: string) => {
+    console.log('search:', value);
+  };
 
   return (
     <div className={styles.container}>
@@ -33,19 +41,24 @@ const News = () => {
         })}
       </ul>
       <div className={styles.sideActions}>
-        <Dropdown menu={{ items, onClick }}>
-          <span onClick={(e) => e.preventDefault()}>
-            <Space>
-              <Text>
-                {
-                  countries.find((country) => country.code === countryCode)
-                    ?.name
-                }
-              </Text>
-              <DownOutlined />
-            </Space>
-          </span>
-        </Dropdown>
+        <Select
+          showSearch
+          placeholder='Select a person'
+          defaultValue={
+            countries.find(
+              (country) =>
+                country.code.toLowerCase() === countryCode.toLowerCase()
+            )?.name
+          }
+          optionFilterProp='children'
+          onChange={onChange}
+          onSearch={onSearch}
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          }
+          options={items}
+          style={{ width: 150 }}
+        />
       </div>
     </div>
   );
