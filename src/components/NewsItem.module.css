@@ -1,0 +1,27 @@
+img {
+  width: 100px;
+  height: auto;
+}
+
+.newsItem {
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+  text-align: left;
+}
+
+.title {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.imageContainer {
+  display: flex;
+  align-items: center;
+}
+
+.textContainer {
+  width: 500px;
+}

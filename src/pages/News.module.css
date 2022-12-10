@@ -1,0 +1,12 @@
+/* ul {
+  background-color: darkgray;
+}*/
+
+.container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.sideActions {
+  margin: 15px;
+}

@@ -19,3 +19,25 @@ export type INewsItem = {
   category?: string[] | null;
   language: string;
 };
+
+export type INewsDataItem = {
+  id: string;
+  title: string;
+  description: string;
+  link: string;
+  author: string;
+  published: string;
+  created: string;
+  category: string[];
+  content: string;
+  enclosures: string[];
+};
+
+export type INewsData = {
+  title: string;
+  description: string;
+  link: string;
+  image: string;
+  category: string;
+  items: INewsDataItem[];
+};

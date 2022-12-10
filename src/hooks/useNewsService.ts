@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { INews } from '../models/News';
 
-const useNewsService = () => {
-  const url =
-    'https://newsdata.io/api/1/news?apikey=pub_14100e34d1670ad239fb7398ca918c71e942b&language=pt&country=pt';
+const useNewsService = (country: string) => {
+  const url = `https://newsdata.io/api/1/news?apikey=pub_14100e34d1670ad239fb7398ca918c71e942b&country=${country}`;
   const [data, setData] = useState({} as INews);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -12,20 +11,16 @@ const useNewsService = () => {
     (async () => {
       try {
         setLoading(true);
-        console.log('fetching');
         const response = await fetch(url);
         const result = await response.json();
         setData(result);
         setLoading(false);
       } catch (err) {
-        console.log(typeof err);
-        console.log(err);
-
         setLoading(false);
         setError('error found');
       }
     })();
-  }, []);
+  }, [url]);
   return { data, loading, error };
 };
 
