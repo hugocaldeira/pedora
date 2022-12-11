@@ -29,10 +29,6 @@ const News = () => {
     setCountryCode(value);
   };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
-
   return (
     <div className={styles.container}>
       <ul>
@@ -50,9 +46,7 @@ const News = () => {
                 country.code.toLowerCase() === countryCode.toLowerCase()
             )?.name
           }
-          optionFilterProp='children'
           onChange={onChange}
-          onSearch={onSearch}
           filterOption={(input, option) =>
             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
           }
