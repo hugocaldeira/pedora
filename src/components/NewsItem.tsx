@@ -1,6 +1,5 @@
 import { INewsItem } from '../models/News';
 import styles from './NewsItem.module.css';
-import image from '../assets/no-picture.jpg';
 import { Card, Image } from 'antd';
 
 const NewsItem = ({ NewsData }: { NewsData: INewsItem }) => {
