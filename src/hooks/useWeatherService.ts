@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { INews } from '../models/INews';
+import { IWeather } from '../models/IWeather';
 
-const useNewsService = (country: string) => {
-  const url = `https://newsdata.io/api/1/news?apikey=pub_14100e34d1670ad239fb7398ca918c71e942b&country=${country}`;
-  const [data, setData] = useState({} as INews);
+const useWeatherService = (city: string) => {
+  const latitude = '41.15';
+  const longitude = '-8.6';
+  const url = `https://api.open-meteo.com/v1/ecmwf?latitude=${latitude}&longitude=${longitude}1&hourly=temperature_2m,weathercode,precipitation,snowfall,runoff,windspeed_10m,winddirection_10m,skin_temperature,soil_temperature_0_to_7cm&past_days=1`;
+  const [data, setData] = useState({} as IWeather);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -18,7 +20,7 @@ const useNewsService = (country: string) => {
         setLoading(false);
       } catch (err) {
         setLoading(false);
-        setData({} as INews);
+        setData({} as IWeather);
         setError('error found');
       }
     })();
@@ -26,4 +28,4 @@ const useNewsService = (country: string) => {
   return { data, loading, error };
 };
 
-export default useNewsService;
+export default useWeatherService;

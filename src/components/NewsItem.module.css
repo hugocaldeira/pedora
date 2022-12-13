@@ -20,8 +20,10 @@ img {
 .imageContainer {
   display: flex;
   align-items: center;
+  width: 100px;
 }
 
 .textContainer {
   width: 500px;
+  padding-right: 10px;
 }

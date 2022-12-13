@@ -1,8 +1,11 @@
 import { ConfigProvider, Layout, theme } from 'antd';
 import News from './pages/News';
 import { Typography } from 'antd';
-import styles from './App.module.css';
 import Title from 'antd/es/typography/Title';
+import MainMenu from './components/MainMenu';
+import { Route } from 'react-router-dom';
+import Weather from './pages/Weather';
+import UserDetails from './pages/UserDetails';
 
 function App() {
   const { Text } = Typography;
@@ -14,15 +17,22 @@ function App() {
         algorithm: theme.defaultAlgorithm,
       }}
     >
-      <Layout>
-        <Layout>
-          <Sider style={{ backgroundColor: '#ffffff' }}>
-            <Title style={{ textAlign: 'center' }}>PEDORA</Title>
-          </Sider>
-          <Content style={{ backgroundColor: '#fafafa' }}>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider style={{ backgroundColor: '#ffffff' }}>
+          <Title style={{ textAlign: 'center' }}>PEDORA</Title>
+          <MainMenu />
+        </Sider>
+        <Content style={{ backgroundColor: '#fafafa' }}>
+          <Route path='/news'>
             <News />
-          </Content>
-        </Layout>
+          </Route>
+          <Route path='/weather'>
+            <Weather />
+          </Route>
+          <Route path='/user-details'>
+            <News />
+          </Route>
+        </Content>
       </Layout>
     </ConfigProvider>
   );
