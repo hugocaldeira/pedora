@@ -1,8 +1,7 @@
 import NewsItem from '../components/NewsItem';
 import useNewsService from '../hooks/useNewsService';
 import styles from './News.module.css';
-import { Dropdown, Empty, MenuProps, Select, Space, Typography } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Select, Typography } from 'antd';
 import { useState } from 'react';
 import countries from '../util/countries';
 import NewsItemLoading from '../components/NewsItemLoading';
