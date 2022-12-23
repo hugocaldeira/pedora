@@ -1,5 +1,5 @@
 img {
-  width: 100px;
+  width: 200px;
   height: auto;
 }
 
@@ -20,7 +20,6 @@ img {
 .imageContainer {
   display: flex;
   align-items: center;
-  width: 100px;
 }
 
 .textContainer {

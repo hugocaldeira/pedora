@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   CloudOutlined,
   FileTextOutlined,
-  SettingOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -20,39 +20,9 @@ const items: MenuProps['items'] = [
     icon: <CloudOutlined />,
   },
   {
-    label: 'Navigation Three - Submenu',
-    key: 'SubMenu',
-    icon: <SettingOutlined />,
-    children: [
-      {
-        type: 'group',
-        label: 'Item 1',
-        children: [
-          {
-            label: 'Option 1',
-            key: 'setting:1',
-          },
-          {
-            label: 'Option 2',
-            key: 'setting:2',
-          },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Item 2',
-        children: [
-          {
-            label: 'Option 3',
-            key: 'setting:3',
-          },
-          {
-            label: 'Option 4',
-            key: 'setting:4',
-          },
-        ],
-      },
-    ],
+    label: <Link to='/secret-friend'>Secret friend</Link>,
+    key: 'secret-friend',
+    icon: <TeamOutlined />,
   },
   {
     label: (
@@ -65,7 +35,7 @@ const items: MenuProps['items'] = [
 ];
 
 const MainMenu = () => {
-  const [current, setCurrent] = useState('news');
+  const [current, setCurrent] = useState(window.location.pathname.replace('/',''));
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
