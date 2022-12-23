@@ -1,7 +1,7 @@
 import NewsItem from '../components/NewsItem';
 import useNewsService from '../hooks/useNewsService';
 import styles from './News.module.css';
-import { Select, Typography } from 'antd';
+import { Select } from 'antd';
 import { useState } from 'react';
 import countries from '../util/countries';
 import NewsItemLoading from '../components/NewsItemLoading';
@@ -10,8 +10,6 @@ import NewsItemNoData from '../components/NewsItemNoData';
 const News = () => {
   const [countryCode, setCountryCode] = useState('pt');
   const { data, loading, error } = useNewsService(countryCode);
-
-  const { Text } = Typography;
 
   const items = countries.map((country) => {
     return {
