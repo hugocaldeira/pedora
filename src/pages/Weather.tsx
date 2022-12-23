@@ -69,7 +69,7 @@ const Weather = () => {
 
   return (
     <div className={styles.container}>
-      <Table dataSource={weatherValues} columns={columns} pagination={{pageSize: 8}} size="small" />
+      <Table dataSource={weatherValues} columns={columns} pagination={{pageSize: 8, showSizeChanger: false}} size="small" />
       <div className={styles.sideActions}>
         <Select
           showSearch
