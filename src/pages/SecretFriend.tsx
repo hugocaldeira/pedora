@@ -1,30 +1,46 @@
 import { Button, Form, Input } from "antd";
-import {
-    MinusCircleOutlined,
-    PlusOutlined,
-  } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const SecretFriend = () => {
-    const formItemLayout = {
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 4 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 20 },
-        },
-      };
-      const formItemLayoutWithOutLabel = {
-        wrapperCol: {
-          xs: { span: 24, offset: 0 },
-          sm: { span: 20, offset: 4 },
-        },
-      };
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 4 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 20 },
+    },
+  };
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 20, offset: 4 },
+    },
+  };
 
-      const onFinish = (values: any) => {
-        console.log('Received values of form:', values);
-      };
+  const onFinish = (values: { names: string[] }) => {
+    console.log(values);
+
+    const shuffledParticipants = shuffle(values.names);
+
+    const secretFriends: { [key: string]: string } = {};
+    for (let i = 0; i < values.names.length - 1; i++) {
+      secretFriends[values.names[i]] = shuffledParticipants[i + 1];
+    }
+    secretFriends[values.names[values.names.length - 1]] = shuffledParticipants[0];
+
+    console.log(secretFriends);
+    
+  };
+
+  function shuffle(array: any[]): any[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   return (
     <Form
@@ -37,8 +53,8 @@ const SecretFriend = () => {
         rules={[
           {
             validator: async (_, names) => {
-              if (!names || names.length < 2) {
-                return Promise.reject(new Error("At least 2 passengers"));
+              if (!names || names.length < 3) {
+                return Promise.reject(new Error("At least three names"));
               }
             },
           },
@@ -60,16 +76,12 @@ const SecretFriend = () => {
                     {
                       required: true,
                       whitespace: true,
-                      message:
-                        "Please input passenger's name or delete this field.",
+                      message: "Name, please",
                     },
                   ]}
                   noStyle
                 >
-                  <Input
-                    placeholder="passenger name"
-                    style={{ width: "60%" }}
-                  />
+                  <Input placeholder="Name" style={{ width: "60%" }} />
                 </Form.Item>
                 {fields.length > 1 ? (
                   <MinusCircleOutlined
@@ -87,16 +99,6 @@ const SecretFriend = () => {
                 icon={<PlusOutlined />}
               >
                 Add field
-              </Button>
-              <Button
-                type="dashed"
-                onClick={() => {
-                  add("The head item", 0);
-                }}
-                style={{ width: "60%", marginTop: "20px" }}
-                icon={<PlusOutlined />}
-              >
-                Add field at head
               </Button>
               <Form.ErrorList errors={errors} />
             </Form.Item>
