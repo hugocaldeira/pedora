@@ -1,5 +1,6 @@
 import { Button, Form, Input } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { ok } from "assert";
 
 const SecretFriend = () => {
   const formItemLayout = {
@@ -21,20 +22,37 @@ const SecretFriend = () => {
 
   const onFinish = (values: { names: string[] }) => {
     console.log(values);
+    const listExceptions: { [key: string]: string[] } = {};
+    listExceptions["hugo"] = ["joana"];
 
-    const shuffledParticipants = shuffle(values.names);
+    let shuffledParticipants;
+    let ok;
+    do {
+      ok = true;
+      shuffledParticipants = shuffle(values.names);
+      const a = shuffledParticipants;
+      for (let i = 0; i < shuffledParticipants.length; i++) {
+        if (
+          listExceptions[shuffledParticipants[i]]?.some(
+            (elem) => elem === a[i + 1]
+          )
+        ) {
+          ok = false;
+        }
+      }
+    } while (!ok);
 
     const secretFriends: { [key: string]: string } = {};
     for (let i = 0; i < values.names.length - 1; i++) {
       secretFriends[values.names[i]] = shuffledParticipants[i + 1];
     }
-    secretFriends[values.names[values.names.length - 1]] = shuffledParticipants[0];
+    secretFriends[values.names[values.names.length - 1]] =
+      shuffledParticipants[0];
 
     console.log(secretFriends);
-    
   };
 
-  function shuffle(array: any[]): any[] {
+  function shuffle(array: any): any[] {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
