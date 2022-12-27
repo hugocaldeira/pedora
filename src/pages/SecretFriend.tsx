@@ -1,6 +1,5 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Select, SelectProps } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { ok } from "assert";
 
 const SecretFriend = () => {
   const formItemLayout = {
@@ -40,6 +39,13 @@ const SecretFriend = () => {
           ok = false;
         }
       }
+      if (
+        listExceptions[
+          shuffledParticipants[shuffledParticipants.length - 1]
+        ]?.some((elem) => elem === a[0])
+      ) {
+        ok = false;
+      }
     } while (!ok);
 
     const secretFriends: { [key: string]: string } = {};
@@ -59,6 +65,18 @@ const SecretFriend = () => {
     }
     return array;
   }
+
+  const options: SelectProps["options"] = [];
+  for (let i = 10; i < 36; i++) {
+    options.push({
+      label: i.toString(36) + i,
+      value: i.toString(36) + i,
+    });
+  }
+
+  const handleChange = (value: string[]) => {
+    console.log(`selected ${value}`);
+  };
 
   return (
     <Form
@@ -101,6 +119,15 @@ const SecretFriend = () => {
                 >
                   <Input placeholder="Name" style={{ width: "60%" }} />
                 </Form.Item>
+                <Select
+                  mode="multiple"
+                  allowClear
+                  style={{ width: "20%" }}
+                  placeholder="Please select"
+                  defaultValue={["a10", "c12"]}
+                  onChange={handleChange}
+                  options={options}
+                />
                 {fields.length > 1 ? (
                   <MinusCircleOutlined
                     className="dynamic-delete-button"
