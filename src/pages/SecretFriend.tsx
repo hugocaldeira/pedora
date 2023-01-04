@@ -1,17 +1,12 @@
-import { Button, Form, Input, Select, SelectProps } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Select, SelectProps, Space } from "antd";
+import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 const SecretFriend = () => {
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 4 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 20 },
-    },
-  };
+  const [name, setName] = useState<string>("");
+  const [options, setOptions] = useState<SelectProps["options"]>([]);
+  const [form] = Form.useForm();
+
   const formItemLayoutWithOutLabel = {
     wrapperCol: {
       xs: { span: 24, offset: 0 },
@@ -19,16 +14,27 @@ const SecretFriend = () => {
     },
   };
 
-  const onFinish = (values: { names: string[] }) => {
-    console.log(values);
+  const onFinish = (values: {
+    participants: { name: string; exceptions: string[] }[];
+  }) => {
+    const participants = values.participants;
+
     const listExceptions: { [key: string]: string[] } = {};
-    listExceptions["hugo"] = ["joana"];
+    const listNames: string[] = [];
+
+    participants.forEach((participant) => {
+      listNames.push(participant.name);
+      listExceptions[participant.name] = participant.exceptions;
+    });
+
+    console.log("listNames", listNames);
+    console.log("listExceptions", listExceptions);
 
     let shuffledParticipants;
     let ok;
     do {
       ok = true;
-      shuffledParticipants = shuffle(values.names);
+      shuffledParticipants = shuffle(listNames);
       const a = shuffledParticipants;
       for (let i = 0; i < shuffledParticipants.length; i++) {
         if (
@@ -49,11 +55,10 @@ const SecretFriend = () => {
     } while (!ok);
 
     const secretFriends: { [key: string]: string } = {};
-    for (let i = 0; i < values.names.length - 1; i++) {
-      secretFriends[values.names[i]] = shuffledParticipants[i + 1];
+    for (let i = 0; i < participants.length - 1; i++) {
+      secretFriends[listNames[i]] = shuffledParticipants[i + 1];
     }
-    secretFriends[values.names[values.names.length - 1]] =
-      shuffledParticipants[0];
+    secretFriends[listNames[listNames.length - 1]] = shuffledParticipants[0];
 
     console.log(secretFriends);
   };
@@ -66,26 +71,27 @@ const SecretFriend = () => {
     return array;
   }
 
-  const options: SelectProps["options"] = [];
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      label: i.toString(36) + i,
-      value: i.toString(36) + i,
-    });
-  }
+  const changeName = (e: any) => {
+    const value = e.target.value;
+    setName(value);
+  };
 
-  const handleChange = (value: string[]) => {
-    console.log(`selected ${value}`);
+  const addOption = (value: string) => {
+    console.log("addOptions", value);
+    setOptions((options) => {
+      return [...(options ?? []), { label: value, value: value }];
+    });
   };
 
   return (
     <Form
-      name="dynamic_form_item"
+    form={form}
+      name="form"
       {...formItemLayoutWithOutLabel}
       onFinish={onFinish}
     >
       <Form.List
-        name="names"
+        name="participants"
         rules={[
           {
             validator: async (_, names) => {
@@ -98,53 +104,52 @@ const SecretFriend = () => {
       >
         {(fields, { add, remove }, { errors }) => (
           <>
+            <Form.Item>
+              <Input
+                placeholder="Name"
+                style={{ width: 150 }}
+                onChange={changeName}
+              />
+              <PlusCircleOutlined
+                type="dashed"
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  addOption(name);
+                  add();
+                }}
+              />
+            </Form.Item>
             {fields.map((field, index) => (
-              <Form.Item
-                {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                label={index === 0 ? "Passengers" : ""}
-                required={false}
-                key={field.key}
-              >
-                <Form.Item
-                  {...field}
-                  validateTrigger={["onChange", "onBlur"]}
-                  rules={[
-                    {
-                      required: true,
-                      whitespace: true,
-                      message: "Name, please",
-                    },
-                  ]}
-                  noStyle
-                >
-                  <Input placeholder="Name" style={{ width: "60%" }} />
-                </Form.Item>
-                <Select
-                  mode="multiple"
-                  allowClear
-                  style={{ width: "20%" }}
-                  placeholder="Please select"
-                  defaultValue={["a10", "c12"]}
-                  onChange={handleChange}
-                  options={options}
-                />
-                {fields.length > 1 ? (
+              <Form.Item key={field.key}>
+                <Space>
+                  <Form.Item
+                    name={[field.name, "name"]}
+                    validateTrigger={["onChange", "onBlur"]}
+                    initialValue={name}
+                    noStyle
+                  >
+                    <Input placeholder="Name" style={{ width: 150 }} readOnly />
+                  </Form.Item>
+                  <Form.Item
+                    name={[field.name, "exceptions"]}
+                    style={{ width: 200, marginBottom: 0 }}
+                  >
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      placeholder="Please select exceptions"
+                      options={options?.filter(
+                        (option) => option.value !== options[index].value
+                      )}
+                    />
+                  </Form.Item>
                   <MinusCircleOutlined
-                    className="dynamic-delete-button"
                     onClick={() => remove(field.name)}
                   />
-                ) : null}
+                </Space>
               </Form.Item>
             ))}
             <Form.Item>
-              <Button
-                type="dashed"
-                onClick={() => add()}
-                style={{ width: "60%" }}
-                icon={<PlusOutlined />}
-              >
-                Add field
-              </Button>
               <Form.ErrorList errors={errors} />
             </Form.Item>
           </>
