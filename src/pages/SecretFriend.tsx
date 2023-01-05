@@ -4,6 +4,7 @@ import { useState } from "react";
 
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
+  const [names, setNames] = useState<string[]>([]);
   const [options, setOptions] = useState<SelectProps["options"]>([]);
   const [form] = Form.useForm();
 
@@ -76,6 +77,17 @@ const SecretFriend = () => {
     setName(value);
   };
 
+  const addName = (value: string) => {
+    setNames((names) => {
+      return [...(names ?? []), value];
+    });
+  };
+  const removeName = (value: string) => {
+    setNames((names) => {
+      return names?.filter((name) => name !== value);
+    });
+  };
+
   const addOption = (value: string) => {
     console.log("addOptions", value);
     setOptions((options) => {
@@ -83,9 +95,15 @@ const SecretFriend = () => {
     });
   };
 
+  const removeOption = (value: string) => {
+    setOptions((options) => {
+      return options?.filter((option) => option.value !== value);
+    });
+  };
+
   return (
     <Form
-    form={form}
+      form={form}
       name="form"
       {...formItemLayoutWithOutLabel}
       onFinish={onFinish}
@@ -115,6 +133,7 @@ const SecretFriend = () => {
                 style={{ marginLeft: "10px" }}
                 onClick={() => {
                   addOption(name);
+                  addName(name);
                   add();
                 }}
               />
@@ -125,7 +144,7 @@ const SecretFriend = () => {
                   <Form.Item
                     name={[field.name, "name"]}
                     validateTrigger={["onChange", "onBlur"]}
-                    initialValue={name}
+                    initialValue={names[names.length - 1]}
                     noStyle
                   >
                     <Input placeholder="Name" style={{ width: 150 }} readOnly />
@@ -144,7 +163,11 @@ const SecretFriend = () => {
                     />
                   </Form.Item>
                   <MinusCircleOutlined
-                    onClick={() => remove(field.name)}
+                    onClick={() => {
+                      removeOption(names[index]);
+                      removeName(names[index]);
+                      remove(field.name);
+                    }}
                   />
                 </Space>
               </Form.Item>
@@ -155,6 +178,7 @@ const SecretFriend = () => {
           </>
         )}
       </Form.List>
+
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Submit
