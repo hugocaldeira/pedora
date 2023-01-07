@@ -1,4 +1,12 @@
-import { Button, Form, Input, Select, SelectProps, Space } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Select,
+  SelectProps,
+  Space,
+  Typography,
+} from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
@@ -6,7 +14,9 @@ const SecretFriend = () => {
   const [name, setName] = useState<string>("");
   const [names, setNames] = useState<string[]>([]);
   const [options, setOptions] = useState<SelectProps["options"]>([]);
+  const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [form] = Form.useForm();
+  const { Text } = Typography;
 
   const formItemLayoutWithOutLabel = {
     wrapperCol: {
@@ -62,6 +72,7 @@ const SecretFriend = () => {
     secretFriends[listNames[listNames.length - 1]] = shuffledParticipants[0];
 
     console.log(secretFriends);
+    setReceivers(secretFriends);
   };
 
   function shuffle(array: any): any[] {
@@ -107,6 +118,7 @@ const SecretFriend = () => {
       name="form"
       {...formItemLayoutWithOutLabel}
       onFinish={onFinish}
+      onValuesChange={(values) => console.log(values)}
     >
       <Form.List
         name="participants"
@@ -127,6 +139,7 @@ const SecretFriend = () => {
                 placeholder="Name"
                 style={{ width: 150 }}
                 onChange={changeName}
+                onKeyDown={(value) => console.log(value)}
               />
               <PlusCircleOutlined
                 type="dashed"
@@ -164,11 +177,16 @@ const SecretFriend = () => {
                   </Form.Item>
                   <MinusCircleOutlined
                     onClick={() => {
+                      console.log(field);
+
                       removeOption(names[index]);
                       removeName(names[index]);
                       remove(field.name);
                     }}
                   />
+                  <Form.Item noStyle>
+                    <Text>{receivers[names[index]]}</Text>
+                  </Form.Item>
                 </Space>
               </Form.Item>
             ))}
