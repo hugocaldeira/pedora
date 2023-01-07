@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import useGreetings from "../hooks/useGreetings";
 
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
@@ -18,6 +19,7 @@ const SecretFriend = () => {
   const [options, setOptions] = useState<SelectProps["options"]>([]);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [form] = Form.useForm();
+  const { data, loading, error } = useGreetings('hugo');
   const { Text } = Typography;
 
   const formItemLayoutWithOutLabel = {
@@ -116,6 +118,7 @@ const SecretFriend = () => {
 
   return (
     <>
+    <Text>{data}</Text>
       <Form
         form={form}
         name="form"
