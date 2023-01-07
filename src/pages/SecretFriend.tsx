@@ -1,7 +1,9 @@
 import {
   Button,
+  Divider,
   Form,
   Input,
+  List,
   Select,
   SelectProps,
   Space,
@@ -113,96 +115,115 @@ const SecretFriend = () => {
   };
 
   return (
-    <Form
-      form={form}
-      name="form"
-      {...formItemLayoutWithOutLabel}
-      onFinish={onFinish}
-      onValuesChange={(values) => console.log(values)}
-    >
-      <Form.List
-        name="participants"
-        rules={[
-          {
-            validator: async (_, names) => {
-              if (!names || names.length < 3) {
-                return Promise.reject(new Error("At least three names"));
-              }
-            },
-          },
-        ]}
+    <>
+      <Form
+        form={form}
+        name="form"
+        {...formItemLayoutWithOutLabel}
+        onFinish={onFinish}
       >
-        {(fields, { add, remove }, { errors }) => (
-          <>
-            <Form.Item>
-              <Input
-                placeholder="Name"
-                style={{ width: 150 }}
-                onChange={changeName}
-                onKeyDown={(value) => console.log(value)}
-              />
-              <PlusCircleOutlined
-                type="dashed"
-                style={{ marginLeft: "10px" }}
-                onClick={() => {
-                  addOption(name);
-                  addName(name);
-                  add();
-                }}
-              />
-            </Form.Item>
-            {fields.map((field, index) => (
-              <Form.Item key={field.key}>
-                <Space>
-                  <Form.Item
-                    name={[field.name, "name"]}
-                    validateTrigger={["onChange", "onBlur"]}
-                    initialValue={names[names.length - 1]}
-                    noStyle
-                  >
-                    <Input placeholder="Name" style={{ width: 150 }} readOnly />
-                  </Form.Item>
-                  <Form.Item
-                    name={[field.name, "exceptions"]}
-                    style={{ width: 200, marginBottom: 0 }}
-                  >
-                    <Select
-                      mode="multiple"
-                      allowClear
-                      placeholder="Please select exceptions"
-                      options={options?.filter(
-                        (option) => option.value !== options[index].value
-                      )}
-                    />
-                  </Form.Item>
-                  <MinusCircleOutlined
-                    onClick={() => {
-                      console.log(field);
-
-                      removeOption(names[index]);
-                      removeName(names[index]);
-                      remove(field.name);
-                    }}
-                  />
-                  <Form.Item noStyle>
-                    <Text>{receivers[names[index]]}</Text>
-                  </Form.Item>
-                </Space>
+        <Form.List
+          name="participants"
+          rules={[
+            {
+              validator: async (_, names) => {
+                if (!names || names.length < 3) {
+                  return Promise.reject(new Error("At least three names"));
+                }
+              },
+            },
+          ]}
+        >
+          {(fields, { add, remove }, { errors }) => (
+            <>
+              <Form.Item>
+                <Input
+                  placeholder="Name"
+                  style={{ width: 150 }}
+                  onChange={changeName}
+                  onPressEnter={() => {
+                    addOption(name);
+                    addName(name);
+                    setName("");
+                    add();
+                  }}
+                />
+                <PlusCircleOutlined
+                  type="dashed"
+                  style={{ marginLeft: "10px" }}
+                  onClick={() => {
+                    addOption(name);
+                    addName(name);
+                    add();
+                  }}
+                />
               </Form.Item>
-            ))}
-            <Form.Item>
-              <Form.ErrorList errors={errors} />
-            </Form.Item>
-          </>
-        )}
-      </Form.List>
+              {fields.map((field, index) => (
+                <Form.Item key={field.key}>
+                  <Space>
+                    <Form.Item
+                      name={[field.name, "name"]}
+                      validateTrigger={["onChange", "onBlur"]}
+                      initialValue={names[names.length - 1]}
+                      noStyle
+                    >
+                      <Input
+                        placeholder="Name"
+                        style={{ width: 150 }}
+                        readOnly
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name={[field.name, "exceptions"]}
+                      style={{ width: 200, marginBottom: 0 }}
+                    >
+                      <Select
+                        mode="multiple"
+                        allowClear
+                        placeholder="Please select exceptions"
+                        options={options?.filter(
+                          (option) => option.value !== options[index].value
+                        )}
+                      />
+                    </Form.Item>
+                    <MinusCircleOutlined
+                      onClick={() => {
+                        removeOption(names[index]);
+                        removeName(names[index]);
+                        remove(field.name);
+                      }}
+                    />
+                    <Form.Item noStyle>
+                      <Text>{receivers[names[index]]}</Text>
+                    </Form.Item>
+                  </Space>
+                </Form.Item>
+              ))}
+              <Form.Item>
+                <Form.ErrorList errors={errors} />
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+      <Divider orientation="left">To do list</Divider>
+      <List
+        bordered
+        dataSource={[
+          "validar se o nome a introduzido já existe",
+          "quando se apaga um participante, tem de se apagar tb nas excepções",
+          "options e names podem ser a mesma coisa?",
+          "passar a função que cálcula os amigos secretos para as functions da digital ocean e em Node JS",
+        ]}
+        renderItem={(item) => <List.Item>{item}</List.Item>}
+      />
+    </>
   );
 };
 
