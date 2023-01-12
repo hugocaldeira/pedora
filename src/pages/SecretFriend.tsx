@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import useGreetings from "../hooks/useGreetings";
+import {  useSecretFriend2 } from "../hooks/useSecretFriend";
 
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
@@ -19,8 +19,8 @@ const SecretFriend = () => {
   const [options, setOptions] = useState<SelectProps["options"]>([]);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [form] = Form.useForm();
-  const { data, loading, error } = useGreetings('hugo');
   const { Text } = Typography;
+  const secretFriend2 = useSecretFriend2()
 
   const formItemLayoutWithOutLabel = {
     wrapperCol: {
@@ -29,63 +29,16 @@ const SecretFriend = () => {
     },
   };
 
-  const onFinish = (values: {
+  const useSubmit = (values: {
     participants: { name: string; exceptions: string[] }[];
   }) => {
-    const participants = values.participants;
+    secretFriend2.mutate(values, {
+      onSuccess: (data) => {
+        setReceivers(data.data);
 
-    const listExceptions: { [key: string]: string[] } = {};
-    const listNames: string[] = [];
-
-    participants.forEach((participant) => {
-      listNames.push(participant.name);
-      listExceptions[participant.name] = participant.exceptions;
+      }
     });
-
-    console.log("listNames", listNames);
-    console.log("listExceptions", listExceptions);
-
-    let shuffledParticipants;
-    let ok;
-    do {
-      ok = true;
-      shuffledParticipants = shuffle(listNames);
-      const a = shuffledParticipants;
-      for (let i = 0; i < shuffledParticipants.length; i++) {
-        if (
-          listExceptions[shuffledParticipants[i]]?.some(
-            (elem) => elem === a[i + 1]
-          )
-        ) {
-          ok = false;
-        }
-      }
-      if (
-        listExceptions[
-          shuffledParticipants[shuffledParticipants.length - 1]
-        ]?.some((elem) => elem === a[0])
-      ) {
-        ok = false;
-      }
-    } while (!ok);
-
-    const secretFriends: { [key: string]: string } = {};
-    for (let i = 0; i < participants.length - 1; i++) {
-      secretFriends[listNames[i]] = shuffledParticipants[i + 1];
-    }
-    secretFriends[listNames[listNames.length - 1]] = shuffledParticipants[0];
-
-    console.log(secretFriends);
-    setReceivers(secretFriends);
   };
-
-  function shuffle(array: any): any[] {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
 
   const changeName = (e: any) => {
     const value = e.target.value;
@@ -118,12 +71,11 @@ const SecretFriend = () => {
 
   return (
     <>
-    <Text>{data}</Text>
       <Form
         form={form}
         name="form"
         {...formItemLayoutWithOutLabel}
-        onFinish={onFinish}
+        onFinish={useSubmit}
       >
         <Form.List
           name="participants"
