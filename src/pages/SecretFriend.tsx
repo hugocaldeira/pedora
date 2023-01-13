@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import {  useSecretFriend2 } from "../hooks/useSecretFriend";
+import { useSecretFriend2 } from "../hooks/useSecretFriend";
 
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
@@ -20,7 +20,7 @@ const SecretFriend = () => {
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [form] = Form.useForm();
   const { Text } = Typography;
-  const secretFriend2 = useSecretFriend2()
+  const secretFriend2 = useSecretFriend2();
 
   const formItemLayoutWithOutLabel = {
     wrapperCol: {
@@ -29,14 +29,13 @@ const SecretFriend = () => {
     },
   };
 
-  const useSubmit = (values: {
+  const onSubmit = (values: {
     participants: { name: string; exceptions: string[] }[];
   }) => {
     secretFriend2.mutate(values, {
       onSuccess: (data) => {
         setReceivers(data.data);
-
-      }
+      },
     });
   };
 
@@ -57,7 +56,6 @@ const SecretFriend = () => {
   };
 
   const addOption = (value: string) => {
-    console.log("addOptions", value);
     setOptions((options) => {
       return [...(options ?? []), { label: value, value: value }];
     });
@@ -75,7 +73,7 @@ const SecretFriend = () => {
         form={form}
         name="form"
         {...formItemLayoutWithOutLabel}
-        onFinish={useSubmit}
+        onFinish={onSubmit}
       >
         <Form.List
           name="participants"
@@ -95,20 +93,24 @@ const SecretFriend = () => {
                 <Input
                   placeholder="Name"
                   style={{ width: 150 }}
+                  value={name}
                   onChange={changeName}
-                  onPressEnter={() => {
+                  onPressEnter={(e) => {
+                    e.preventDefault();
                     addOption(name);
                     addName(name);
                     setName("");
                     add();
                   }}
                 />
+
                 <PlusCircleOutlined
                   type="dashed"
                   style={{ marginLeft: "10px" }}
                   onClick={() => {
                     addOption(name);
                     addName(name);
+                    setName("");
                     add();
                   }}
                 />
