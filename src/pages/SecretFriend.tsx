@@ -169,17 +169,6 @@ const SecretFriend = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Divider orientation="left">To do list</Divider>
-      <List
-        bordered
-        dataSource={[
-          "validar se o nome a introduzido já existe",
-          "quando se apaga um participante, tem de se apagar tb nas excepções",
-          "options e names podem ser a mesma coisa?",
-          "passar a função que cálcula os amigos secretos para as functions da digital ocean e em Node JS",
-        ]}
-        renderItem={(item) => <List.Item>{item}</List.Item>}
-      />
     </>
   );
 };
