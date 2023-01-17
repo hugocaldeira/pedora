@@ -45,11 +45,13 @@ const SecretFriend = () => {
   };
 
   const addName = (value: string) => {
+    form.validateFields();
     setNames((names) => {
       return [...(names ?? []), value];
     });
   };
   const removeName = (value: string) => {
+    form.validateFields();
     setNames((names) => {
       return names?.filter((name) => name !== value);
     });
@@ -79,8 +81,8 @@ const SecretFriend = () => {
           name="participants"
           rules={[
             {
-              validator: async (_, names) => {
-                if (!names || names.length < 3) {
+              validator: async (_, participants) => {                
+                if (!participants || participants.length < 3) {
                   return Promise.reject(new Error("At least three names"));
                 }
               },
@@ -100,6 +102,7 @@ const SecretFriend = () => {
                     addOption(name);
                     addName(name);
                     setName("");
+                    
                     add();
                   }}
                 />
@@ -133,6 +136,15 @@ const SecretFriend = () => {
                     <Form.Item
                       name={[field.name, "exceptions"]}
                       style={{ width: 200, marginBottom: 0 }}
+                      rules={[
+                        {
+                          validator: async (_, exceptionsList) => {
+                            if (exceptionsList?.length >= names.length-1){
+                              return Promise.reject(new Error("Computer says no..."));
+                            }
+                          },
+                        },
+                      ]}
                     >
                       <Select
                         mode="multiple"
