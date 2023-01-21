@@ -1,9 +1,7 @@
 import {
   Button,
-  Divider,
   Form,
   Input,
-  List,
   Select,
   SelectProps,
   Space,
@@ -50,6 +48,7 @@ const SecretFriend = () => {
       return [...(names ?? []), value];
     });
   };
+
   const removeName = (value: string) => {
     form.validateFields();
     setNames((names) => {
@@ -69,6 +68,18 @@ const SecretFriend = () => {
     });
   };
 
+  const addNameEvent = (a: (() => void)) => {
+    if (name &&
+      names.filter((nameInTheList) => nameInTheList === name)
+        .length === 0
+    ) {
+      addOption(name);
+      addName(name);
+      setName("");
+      a();
+    }
+  };
+
   return (
     <>
       <Form
@@ -81,7 +92,7 @@ const SecretFriend = () => {
           name="participants"
           rules={[
             {
-              validator: async (_, participants) => {                
+              validator: async (_, participants) => {
                 if (!participants || participants.length < 3) {
                   return Promise.reject(new Error("At least three names"));
                 }
@@ -99,11 +110,7 @@ const SecretFriend = () => {
                   onChange={changeName}
                   onPressEnter={(e) => {
                     e.preventDefault();
-                    addOption(name);
-                    addName(name);
-                    setName("");
-                    
-                    add();
+                    addNameEvent(add);
                   }}
                 />
 
@@ -111,10 +118,7 @@ const SecretFriend = () => {
                   type="dashed"
                   style={{ marginLeft: "10px" }}
                   onClick={() => {
-                    addOption(name);
-                    addName(name);
-                    setName("");
-                    add();
+                    addNameEvent(add);
                   }}
                 />
               </Form.Item>
@@ -139,8 +143,10 @@ const SecretFriend = () => {
                       rules={[
                         {
                           validator: async (_, exceptionsList) => {
-                            if (exceptionsList?.length >= names.length-1){
-                              return Promise.reject(new Error("Computer says no..."));
+                            if (exceptionsList?.length >= names.length - 1) {
+                              return Promise.reject(
+                                new Error("Computer says no...")
+                              );
                             }
                           },
                         },
