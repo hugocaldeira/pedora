@@ -14,7 +14,7 @@ import { useSecretFriend2 } from "../hooks/useSecretFriend";
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
   const [names, setNames] = useState<string[]>([]);
-  const [options, setOptions] = useState<SelectProps["options"]>([]);
+  const [exceptionsOptions, setExceptionsOptions] = useState<SelectProps["options"]>([]);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [form] = Form.useForm();
   const { Text } = Typography;
@@ -56,28 +56,38 @@ const SecretFriend = () => {
     });
   };
 
-  const addOption = (value: string) => {
-    setOptions((options) => {
+  const addExceptionOption = (value: string) => {
+    setExceptionsOptions((options) => {
       return [...(options ?? []), { label: value, value: value }];
     });
   };
 
-  const removeOption = (value: string) => {
-    setOptions((options) => {
+  const removeExceptionOption = (value: string) => {
+    setExceptionsOptions((options) => {
       return options?.filter((option) => option.value !== value);
     });
   };
 
-  const addNameEvent = (a: (() => void)) => {
-    if (name &&
-      names.filter((nameInTheList) => nameInTheList === name)
-        .length === 0
+  const handlerAddName = (addToForm: () => void) => {
+    if (
+      name &&
+      names.filter((nameInTheList) => nameInTheList === name).length === 0
     ) {
-      addOption(name);
+      addExceptionOption(name);
       addName(name);
       setName("");
-      a();
+      addToForm();
     }
+  };
+
+  const handlerRemoveName = (
+    index: number,
+    fieldName: number,
+    removeFromForm: (fieldName: number) => void
+  ) => {
+    removeExceptionOption(names[index]);
+    removeName(names[index]);
+    removeFromForm(fieldName);
   };
 
   return (
@@ -110,7 +120,7 @@ const SecretFriend = () => {
                   onChange={changeName}
                   onPressEnter={(e) => {
                     e.preventDefault();
-                    addNameEvent(add);
+                    handlerAddName(add);
                   }}
                 />
 
@@ -118,7 +128,7 @@ const SecretFriend = () => {
                   type="dashed"
                   style={{ marginLeft: "10px" }}
                   onClick={() => {
-                    addNameEvent(add);
+                    handlerAddName(add);
                   }}
                 />
               </Form.Item>
@@ -156,16 +166,14 @@ const SecretFriend = () => {
                         mode="multiple"
                         allowClear
                         placeholder="Please select exceptions"
-                        options={options?.filter(
-                          (option) => option.value !== options[index].value
+                        options={exceptionsOptions?.filter(
+                          (option) => option.value !== exceptionsOptions[index].value
                         )}
                       />
                     </Form.Item>
                     <MinusCircleOutlined
                       onClick={() => {
-                        removeOption(names[index]);
-                        removeName(names[index]);
-                        remove(field.name);
+                        handlerRemoveName(index, field.name, remove);
                       }}
                     />
                     <Form.Item noStyle>
