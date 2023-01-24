@@ -14,7 +14,10 @@ import { useSecretFriend2 } from "../hooks/useSecretFriend";
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
   const [names, setNames] = useState<string[]>([]);
-  const [exceptionsOptions, setExceptionsOptions] = useState<SelectProps["options"]>([]);
+  const [exceptionsOptions, setExceptionsOptions] = useState<
+    SelectProps["options"]
+  >([]);
+  const [disableSubmit, setDisableSubmit] = useState(true);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [form] = Form.useForm();
   const { Text } = Typography;
@@ -43,7 +46,6 @@ const SecretFriend = () => {
   };
 
   const addName = (value: string) => {
-    form.validateFields();
     setNames((names) => {
       return [...(names ?? []), value];
     });
@@ -90,6 +92,11 @@ const SecretFriend = () => {
     removeFromForm(fieldName);
   };
 
+  const handleFormChange = () => {
+    const hasErrors = form.getFieldsError().some(({ errors }) => errors.length);
+    setDisableSubmit(hasErrors);
+  };
+
   return (
     <>
       <Form
@@ -97,14 +104,17 @@ const SecretFriend = () => {
         name="form"
         {...formItemLayoutWithOutLabel}
         onFinish={onSubmit}
+        onFieldsChange={handleFormChange}
       >
         <Form.List
           name="participants"
           rules={[
             {
-              validator: async (_, participants) => {
+              validator: (_, participants) => {
                 if (!participants || participants.length < 3) {
                   return Promise.reject(new Error("At least three names"));
+                } else {
+                  return Promise.resolve();
                 }
               },
             },
@@ -152,11 +162,13 @@ const SecretFriend = () => {
                       style={{ width: 200, marginBottom: 0 }}
                       rules={[
                         {
-                          validator: async (_, exceptionsList) => {
+                          validator: (_, exceptionsList) => {
                             if (exceptionsList?.length >= names.length - 1) {
                               return Promise.reject(
                                 new Error("Computer says no...")
                               );
+                            } else {
+                              return Promise.resolve();
                             }
                           },
                         },
@@ -167,7 +179,8 @@ const SecretFriend = () => {
                         allowClear
                         placeholder="Please select exceptions"
                         options={exceptionsOptions?.filter(
-                          (option) => option.value !== exceptionsOptions[index].value
+                          (option) =>
+                            option.value !== exceptionsOptions[index].value
                         )}
                       />
                     </Form.Item>
@@ -190,7 +203,7 @@ const SecretFriend = () => {
         </Form.List>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled={disableSubmit}>
             Submit
           </Button>
         </Form.Item>
