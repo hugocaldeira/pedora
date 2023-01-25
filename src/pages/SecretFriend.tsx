@@ -46,6 +46,7 @@ const SecretFriend = () => {
   };
 
   const addName = (value: string) => {
+    form.validateFields();
     setNames((names) => {
       return [...(names ?? []), value];
     });
