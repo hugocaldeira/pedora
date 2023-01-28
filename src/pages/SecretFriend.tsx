@@ -11,6 +11,8 @@ import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useSecretFriend2 } from "../hooks/useSecretFriend";
 
+type Participants = { name: string; exceptions: string[] }[];
+
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
   const [names, setNames] = useState<string[]>([]);
@@ -30,9 +32,7 @@ const SecretFriend = () => {
     },
   };
 
-  const onSubmit = (values: {
-    participants: { name: string; exceptions: string[] }[];
-  }) => {
+  const onSubmit = (values: { participants: Participants }) => {
     secretFriend2.mutate(values, {
       onSuccess: (data) => {
         setReceivers(data.data);
@@ -53,6 +53,15 @@ const SecretFriend = () => {
   };
 
   const removeName = (value: string) => {
+    let participantsClean: Participants = [];
+    const participants: Participants = form.getFieldsValue().participants;
+    participants.forEach((participant) => {
+      participantsClean.push({
+        name: participant.name,
+        exceptions: participant.exceptions?.filter((p) => p !== value),
+      });
+    });
+    form.setFieldsValue({ participants: participantsClean });
     form.validateFields();
     setNames((names) => {
       return names?.filter((name) => name !== value);
