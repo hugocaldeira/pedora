@@ -11,7 +11,8 @@ import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useSecretFriend2 } from "../hooks/useSecretFriend";
 
-type Participants = { name: string; exceptions: string[] }[];
+type Participant = { name: string; exceptions: string[] };
+type Participants = Participant[];
 
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
@@ -120,7 +121,7 @@ const SecretFriend = () => {
           name="participants"
           rules={[
             {
-              validator: (_, participants) => {
+              validator: (_, participants: Participants) => {
                 if (!participants || participants.length < 3) {
                   return Promise.reject(new Error("At least three names"));
                 } else {
@@ -173,13 +174,37 @@ const SecretFriend = () => {
                       rules={[
                         {
                           validator: (_, exceptionsList) => {
+                            const participants: Participants =
+                              form.getFieldsValue().participants;
+                            let a: string[] = [];
+                            participants?.forEach((participant) => {
+                              participant?.exceptions?.forEach((exception) => {
+                                a.push(exception);
+                              });
+                            });
+                            const count: { [key: string]: number } = {};
+                            for (const element of a) {
+                              count[element] = count[element]
+                                ? count[element] + 1
+                                : 1;
+                            }
+                            for (const key in count) {  
+                              if (
+                                count.hasOwnProperty(key) &&
+                                count[key] >= participants.length - 1
+                              ) {
+                                return Promise.reject(
+                                  new Error("Computer says no, no...")
+                                );
+                              }
+                            }
+
                             if (exceptionsList?.length >= names.length - 1) {
                               return Promise.reject(
                                 new Error("Computer says no...")
                               );
-                            } else {
-                              return Promise.resolve();
                             }
+                            return Promise.resolve();
                           },
                         },
                       ]}
