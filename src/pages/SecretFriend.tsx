@@ -108,6 +108,37 @@ const SecretFriend = () => {
     setDisableSubmit(hasErrors);
   };
 
+  const itemFormValidator = (exceptionsList: string[]) => {
+    const participants: Participants = form.getFieldsValue().participants;
+    let a: string[] = [];
+    participants?.forEach((participant) => {
+      participant?.exceptions?.forEach((exception) => {
+        a.push(exception);
+      });
+    });
+    const count: { [key: string]: number } = {};
+    for (const element of a) {
+      count[element] = count[element] ? count[element] + 1 : 1;
+    }
+    for (const key in count) {
+      if (count.hasOwnProperty(key) && count[key] >= participants.length - 1) {
+        return Promise.reject(new Error("Computer says no, no..."));
+      }
+    }
+    if (exceptionsList?.length >= names.length - 1) {
+      return Promise.reject(new Error("Computer says no..."));
+    }
+    return Promise.resolve();
+  };
+
+  const formListValidator = (participants: Participants) => {
+    if (!participants || participants.length < 3) {
+      return Promise.reject(new Error("At least three names"));
+    } else {
+      return Promise.resolve();
+    }
+  }
+
   return (
     <>
       <Form
@@ -122,11 +153,7 @@ const SecretFriend = () => {
           rules={[
             {
               validator: (_, participants: Participants) => {
-                if (!participants || participants.length < 3) {
-                  return Promise.reject(new Error("At least three names"));
-                } else {
-                  return Promise.resolve();
-                }
+                return formListValidator(participants)
               },
             },
           ]}
@@ -144,7 +171,6 @@ const SecretFriend = () => {
                     handlerAddName(add);
                   }}
                 />
-
                 <PlusCircleOutlined
                   type="dashed"
                   style={{ marginLeft: "10px" }}
@@ -174,37 +200,7 @@ const SecretFriend = () => {
                       rules={[
                         {
                           validator: (_, exceptionsList) => {
-                            const participants: Participants =
-                              form.getFieldsValue().participants;
-                            let a: string[] = [];
-                            participants?.forEach((participant) => {
-                              participant?.exceptions?.forEach((exception) => {
-                                a.push(exception);
-                              });
-                            });
-                            const count: { [key: string]: number } = {};
-                            for (const element of a) {
-                              count[element] = count[element]
-                                ? count[element] + 1
-                                : 1;
-                            }
-                            for (const key in count) {  
-                              if (
-                                count.hasOwnProperty(key) &&
-                                count[key] >= participants.length - 1
-                              ) {
-                                return Promise.reject(
-                                  new Error("Computer says no, no...")
-                                );
-                              }
-                            }
-
-                            if (exceptionsList?.length >= names.length - 1) {
-                              return Promise.reject(
-                                new Error("Computer says no...")
-                              );
-                            }
-                            return Promise.resolve();
+                            return itemFormValidator(exceptionsList);
                           },
                         },
                       ]}
@@ -236,7 +232,6 @@ const SecretFriend = () => {
             </>
           )}
         </Form.List>
-
         <Form.Item>
           <Button type="primary" htmlType="submit" disabled={disableSubmit}>
             Submit
