@@ -17,11 +17,13 @@ type Participants = Participant[];
 const SecretFriend = () => {
   const [name, setName] = useState<string>("");
   const [names, setNames] = useState<string[]>([]);
+
   const [exceptionsOptions, setExceptionsOptions] = useState<
     SelectProps["options"]
   >([]);
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
   const { Text } = Typography;
   const secretFriend2 = useSecretFriend2();
@@ -34,9 +36,13 @@ const SecretFriend = () => {
   };
 
   const onSubmit = (values: { participants: Participants }) => {
+    setIsLoading(true);
     secretFriend2.mutate(values, {
       onSuccess: (data) => {
         setReceivers(data.data);
+      },
+      onSettled: () => {
+        setIsLoading(false);
       },
     });
   };
@@ -137,7 +143,7 @@ const SecretFriend = () => {
     } else {
       return Promise.resolve();
     }
-  }
+  };
 
   return (
     <>
@@ -153,7 +159,7 @@ const SecretFriend = () => {
           rules={[
             {
               validator: (_, participants: Participants) => {
-                return formListValidator(participants)
+                return formListValidator(participants);
               },
             },
           ]}
@@ -233,7 +239,7 @@ const SecretFriend = () => {
           )}
         </Form.List>
         <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={disableSubmit}>
+          <Button type="primary" htmlType="submit" disabled={disableSubmit} loading={isLoading}>
             Submit
           </Button>
         </Form.Item>
