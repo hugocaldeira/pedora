@@ -1,13 +1,23 @@
 import {
   Button,
+  Card,
+  Col,
+  Divider,
   Form,
   Input,
+  Modal,
+  Row,
   Select,
   SelectProps,
   Space,
   Typography,
 } from "antd";
-import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+  RightOutlined,
+  GiftOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import { useSecretFriend2 } from "../hooks/useSecretFriend";
 
@@ -24,6 +34,16 @@ const SecretFriend = () => {
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const [form] = Form.useForm();
   const { Text } = Typography;
   const secretFriend2 = useSecretFriend2();
@@ -37,6 +57,7 @@ const SecretFriend = () => {
 
   const onSubmit = (values: { participants: Participants }) => {
     setIsLoading(true);
+    setIsModalOpen(true);
     secretFriend2.mutate(values, {
       onSuccess: (data) => {
         setReceivers(data.data);
@@ -167,23 +188,30 @@ const SecretFriend = () => {
           {(fields, { add, remove }, { errors }) => (
             <>
               <Form.Item>
-                <Input
-                  placeholder="Name"
-                  style={{ width: 150 }}
-                  value={name}
-                  onChange={changeName}
-                  onPressEnter={(e) => {
-                    e.preventDefault();
-                    handlerAddName(add);
-                  }}
-                />
-                <PlusCircleOutlined
-                  type="dashed"
-                  style={{ marginLeft: "10px" }}
-                  onClick={() => {
-                    handlerAddName(add);
-                  }}
-                />
+                <Row gutter={16} align="middle">
+                  <Col span={8}>
+                    <Input
+                      placeholder="Name"
+                      style={{ width: "100%" }}
+                      value={name}
+                      onChange={changeName}
+                      onPressEnter={(e) => {
+                        e.preventDefault();
+                        handlerAddName(add);
+                      }}
+                    />
+                  </Col>
+                  <Col span={8}>
+                    <PlusCircleOutlined
+                      type="dashed"
+                      style={{ fontSize: "20px", color: "blue" }}
+                      onClick={() => {
+                        handlerAddName(add);
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Divider />
               </Form.Item>
               {fields.map((field, index) => (
                 <Form.Item key={field.key}>
@@ -222,13 +250,11 @@ const SecretFriend = () => {
                       />
                     </Form.Item>
                     <MinusCircleOutlined
+                      style={{ fontSize: "20px", color: "red" }}
                       onClick={() => {
                         handlerRemoveName(index, field.name, remove);
                       }}
                     />
-                    <Form.Item noStyle>
-                      <Text>{receivers[names[index]]}</Text>
-                    </Form.Item>
                   </Space>
                 </Form.Item>
               ))}
@@ -239,11 +265,35 @@ const SecretFriend = () => {
           )}
         </Form.List>
         <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={disableSubmit} loading={isLoading}>
-            Submit
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={disableSubmit}
+            loading={isLoading}
+          >
+            Draw
           </Button>
         </Form.Item>
       </Form>
+      <Modal
+        title="Results"
+        open={isModalOpen && !isLoading}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelButtonProps={{ style: { display: "none" } }}
+      >
+        <Card>
+          {Object.keys(receivers).map((key) => (
+            <p>
+              <Space>
+                <Text> {key}</Text>
+                <RightOutlined />
+                <Text>{receivers[key]}</Text>
+              </Space>
+            </p>
+          ))}
+        </Card>
+      </Modal>
     </>
   );
 };

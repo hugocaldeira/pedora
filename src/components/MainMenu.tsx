@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   CloudOutlined,
   FileTextOutlined,
-  TeamOutlined,
+  GiftOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -22,16 +22,8 @@ const items: MenuProps['items'] = [
   {
     label: <Link to='/secret-friend'>Secret friend</Link>,
     key: 'secret-friend',
-    icon: <TeamOutlined />,
-  },
-  {
-    label: (
-      <a href='https://ant.design' target='_blank' rel='noopener noreferrer'>
-        Navigation Four - Link
-      </a>
-    ),
-    key: 'alipay',
-  },
+    icon: <GiftOutlined />,
+  }
 ];
 
 const MainMenu = () => {
