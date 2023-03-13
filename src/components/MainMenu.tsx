@@ -3,6 +3,7 @@ import {
   CloudOutlined,
   FileTextOutlined,
   GiftOutlined,
+  MenuOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -23,11 +24,18 @@ const items: MenuProps['items'] = [
     label: <Link to='/secret-friend'>Secret friend</Link>,
     key: 'secret-friend',
     icon: <GiftOutlined />,
-  }
+  },
+  {
+    label: <Link to='/about'>About</Link>,
+    key: 'about',
+    icon: <MenuOutlined />,
+  },
 ];
 
 const MainMenu = () => {
-  const [current, setCurrent] = useState(window.location.pathname.replace('/',''));
+  const [current, setCurrent] = useState(
+    window.location.pathname.replace('/', '')
+  );
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);

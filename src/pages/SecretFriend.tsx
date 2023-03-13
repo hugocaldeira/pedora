@@ -11,25 +11,24 @@ import {
   SelectProps,
   Space,
   Typography,
-} from "antd";
+} from 'antd';
 import {
   MinusCircleOutlined,
   PlusCircleOutlined,
   RightOutlined,
-  GiftOutlined,
-} from "@ant-design/icons";
-import { useState } from "react";
-import { useSecretFriend2 } from "../hooks/useSecretFriend";
+} from '@ant-design/icons';
+import { useState } from 'react';
+import { useSecretFriend2 } from '../hooks/useSecretFriend';
 
 type Participant = { name: string; exceptions: string[] };
 type Participants = Participant[];
 
 const SecretFriend = () => {
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>('');
   const [names, setNames] = useState<string[]>([]);
 
   const [exceptionsOptions, setExceptionsOptions] = useState<
-    SelectProps["options"]
+    SelectProps['options']
   >([]);
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [receivers, setReceivers] = useState<{ [key: string]: string }>({});
@@ -115,7 +114,7 @@ const SecretFriend = () => {
     ) {
       addExceptionOption(name);
       addName(name);
-      setName("");
+      setName('');
       addToForm();
     }
   };
@@ -149,18 +148,18 @@ const SecretFriend = () => {
     }
     for (const key in count) {
       if (count.hasOwnProperty(key) && count[key] >= participants.length - 1) {
-        return Promise.reject(new Error("Computer says no, no..."));
+        return Promise.reject(new Error('Computer says no, no...'));
       }
     }
     if (exceptionsList?.length >= names.length - 1) {
-      return Promise.reject(new Error("Computer says no..."));
+      return Promise.reject(new Error('Computer says no...'));
     }
     return Promise.resolve();
   };
 
   const formListValidator = (participants: Participants) => {
     if (!participants || participants.length < 3) {
-      return Promise.reject(new Error("At least three names"));
+      return Promise.reject(new Error('At least three names'));
     } else {
       return Promise.resolve();
     }
@@ -170,13 +169,13 @@ const SecretFriend = () => {
     <>
       <Form
         form={form}
-        name="form"
+        name='form'
         {...formItemLayoutWithOutLabel}
         onFinish={onSubmit}
         onFieldsChange={handleFormChange}
       >
         <Form.List
-          name="participants"
+          name='participants'
           rules={[
             {
               validator: (_, participants: Participants) => {
@@ -188,11 +187,11 @@ const SecretFriend = () => {
           {(fields, { add, remove }, { errors }) => (
             <>
               <Form.Item>
-                <Row gutter={16} align="middle">
+                <Row gutter={16} align='middle'>
                   <Col span={8}>
                     <Input
-                      placeholder="Name"
-                      style={{ width: "100%" }}
+                      placeholder='Name'
+                      style={{ width: '100%' }}
                       value={name}
                       onChange={changeName}
                       onPressEnter={(e) => {
@@ -203,8 +202,8 @@ const SecretFriend = () => {
                   </Col>
                   <Col span={8}>
                     <PlusCircleOutlined
-                      type="dashed"
-                      style={{ fontSize: "20px", color: "blue" }}
+                      type='dashed'
+                      style={{ fontSize: '20px', color: 'blue' }}
                       onClick={() => {
                         handlerAddName(add);
                       }}
@@ -217,19 +216,19 @@ const SecretFriend = () => {
                 <Form.Item key={field.key}>
                   <Space>
                     <Form.Item
-                      name={[field.name, "name"]}
-                      validateTrigger={["onChange", "onBlur"]}
+                      name={[field.name, 'name']}
+                      validateTrigger={['onChange', 'onBlur']}
                       initialValue={names[names.length - 1]}
                       noStyle
                     >
                       <Input
-                        placeholder="Name"
+                        placeholder='Name'
                         style={{ width: 150 }}
                         readOnly
                       />
                     </Form.Item>
                     <Form.Item
-                      name={[field.name, "exceptions"]}
+                      name={[field.name, 'exceptions']}
                       style={{ width: 200, marginBottom: 0 }}
                       rules={[
                         {
@@ -240,9 +239,9 @@ const SecretFriend = () => {
                       ]}
                     >
                       <Select
-                        mode="multiple"
+                        mode='multiple'
                         allowClear
-                        placeholder="Please select exceptions"
+                        placeholder='Please select exceptions'
                         options={exceptionsOptions?.filter(
                           (option) =>
                             option.value !== exceptionsOptions[index].value
@@ -250,7 +249,7 @@ const SecretFriend = () => {
                       />
                     </Form.Item>
                     <MinusCircleOutlined
-                      style={{ fontSize: "20px", color: "red" }}
+                      style={{ fontSize: '20px', color: 'red' }}
                       onClick={() => {
                         handlerRemoveName(index, field.name, remove);
                       }}
@@ -266,8 +265,8 @@ const SecretFriend = () => {
         </Form.List>
         <Form.Item>
           <Button
-            type="primary"
-            htmlType="submit"
+            type='primary'
+            htmlType='submit'
             disabled={disableSubmit}
             loading={isLoading}
           >
@@ -276,11 +275,11 @@ const SecretFriend = () => {
         </Form.Item>
       </Form>
       <Modal
-        title="Results"
+        title='Results'
         open={isModalOpen && !isLoading}
         onOk={handleOk}
         onCancel={handleCancel}
-        cancelButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: 'none' } }}
       >
         <Card>
           {Object.keys(receivers).map((key) => (
